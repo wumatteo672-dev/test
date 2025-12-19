@@ -1,0 +1,37 @@
+name: Build APK
+
+# 触发条件
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    # Step 1: Checkout 你的仓库
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    # Step 2: 设置 Java
+    - name: Set up Java
+      uses: actions/setup-java@v3
+      with:
+        distribution: 'temurin'
+        java-version: '17'
+
+    # Step 3: 构建 APK
+    - name: Build APK with Gradle Wrapper
+      uses: gradle/gradle-build-action@v3
+      with:
+        arguments: assembleDebug
+
+    # Step 4: 上传 APK
+    - name: Upload debug APK
+      uses: actions/upload-artifact@v4
+      with:
+        name: app-debug-apk
+        path: app/build/outputs/apk/debug/app-debug.apk
